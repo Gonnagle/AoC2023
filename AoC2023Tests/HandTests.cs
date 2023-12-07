@@ -20,6 +20,9 @@ public class HandTests
     [InlineData("A2A3A", "A2AKA", -1)]
     [InlineData("AKQQQ", "22323", -1)]
     [InlineData("A7KQJ", "A8123", -1)]
+    [InlineData("AAKAQ", "AA3A3", -1)]
+    [InlineData("AA3A3", "AAKAQ", 1)]
+    [InlineData("2A2A9", "KAQAT", 1)]
     public void HandComparisonWorksAsExpected(string hand1Cards, string hand2Cards, int expectedOutcome)
     {
         var hand1 = new Day7.Hand($"{hand1Cards} 373");
