@@ -14,6 +14,7 @@ namespace AoC2023Tests
         {
             {1, new Result("142", "281")},
             {2, new Result("8", "")},
+            {7, new Result("6440", "")},
         };
         public record Result(string Part1, string Part2);
 
