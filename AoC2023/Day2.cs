@@ -16,7 +16,7 @@
                 foreach (var grab in grabs)
                 {
                     // Convert comma separated string into dictionary with red, blue and green counts
-                    var grabInfo = grab.Trim().Split(",").Select(s => s.Split(" ")).ToDictionary(s => s[1], s => int.Parse(s[0]));
+                    var grabInfo = grab.Trim().Split(",").Select(s => s.Trim().Split(" ")).ToDictionary(s => s[1], s => int.Parse(s[0]));
                     var redCount = grabInfo.TryGetValue("red", out var value ) ? value : 0;
                     var blueCount = grabInfo.TryGetValue("blue", out value ) ? value : 0;
                     var greenCount = grabInfo.TryGetValue("green", out value ) ? value : 0;
