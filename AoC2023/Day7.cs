@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 
 namespace AoC2023
 {
@@ -24,12 +24,13 @@ namespace AoC2023
              * 2,1,1,1
              * 1,1,1,1,1
              */
-            var hand1CardCounts = hand1Counts.Values.ToImmutableSortedSet().Reverse().ToList();
-            var hand2CardCounts = hand2Counts.Values.ToImmutableSortedSet().Reverse().ToList();
+            var hand1CardCounts = hand1Counts.Values.OrderByDescending(x => x).ToList();
+            var hand2CardCounts = hand2Counts.Values.OrderByDescending(x => x).ToList();
 
-            var order = hand1CardCounts.Count - hand2CardCounts.Count;
+            // Bigger amount of groups means automatically weaker set
+            var order = hand2CardCounts.Count - hand1CardCounts.Count;
             if (order != 0) return order;
-
+            
             // Compare counts of biggest sets
             // * (3,1,1 vs 2,2,1) => 3 > 2 -> bigger
             // * (3,1,1 vs 3,2) => 3 == 3 -> equal, 1 < 2 -> smaller
@@ -47,7 +48,7 @@ namespace AoC2023
                 order = hand1CardScore - hand2CardScore;
                 if (order != 0) return order;
             }
-            return 0;
+            return order;
         }
 
         public static int GetCardScore(char card)
