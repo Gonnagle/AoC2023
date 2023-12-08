@@ -13,7 +13,7 @@ namespace AoC2023Tests
         private readonly Dictionary<int, Result> _expectedExampleResults = new()
         {
             {1, new Result("142", "281")},
-            {2, new Result("8", "")},
+            {2, new Result("8", "2286")},
             {7, new Result("6440", "5905")},
         };
         public record Result(string Part1, string Part2);
