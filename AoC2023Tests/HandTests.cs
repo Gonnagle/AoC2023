@@ -34,10 +34,34 @@ public class HandTests
         {
             result /= int.Abs(result);
         }
-
         result.Should().Be(expectedOutcome);
     }
 
+    [Theory]
+    [InlineData("22222", "11111", 1)]
+    [InlineData("AAKAQ", "AA3A3", -1)]
+    [InlineData("AA3A3", "AAKAQ", 1)]
+    [InlineData("2A2A9", "KAQAT", 1)]
+    [InlineData("J2345", "22345", -1)]
+    [InlineData("AKQJT", "AKQTT", -1)]
+    [InlineData("JKKK2", "QQQQ2", -1)]
+    [InlineData("AJJJJ", "KKKKK", 1)]
+    [InlineData("2JJJ3", "AKAKA", 1)]
+    [InlineData("22222", "JJJJJ", 1)]
+    public void MenacedHandComparisonWorksAsExpected(string hand1Cards, string hand2Cards, int expectedOutcome)
+    {
+        var hand1 = new Day7.Hand($"{hand1Cards} 373");
+        var hand2 = new Day7.Hand($"{hand2Cards} 373");
+
+        var result = Day7.CompareHandsOfDarkness(hand1, hand2);
+
+        if (result != 0)
+        {
+            result /= int.Abs(result);
+        }
+        result.Should().Be(expectedOutcome);
+    }
+    
     [Theory]
     [InlineData('A', 14)]
     [InlineData('K', 13)]
@@ -50,4 +74,18 @@ public class HandTests
     {
         Day7.GetCardScore(card).Should().Be(expectedScore);
     }
+    
+    [Theory]
+    [InlineData('A', 14)]
+    [InlineData('K', 13)]
+    [InlineData('Q', 12)]
+    [InlineData('J', 0)]
+    [InlineData('T', 10)]
+    [InlineData('9', 9)]
+    [InlineData('1', 1)]
+    public void ClownPrinceCardScoringWorksAsExpected(char card, int expectedScore)
+    {
+        Day7.GetGothamCardScore(card).Should().Be(expectedScore);
+    }
+    
 }

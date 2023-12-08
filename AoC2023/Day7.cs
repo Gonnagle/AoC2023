@@ -1,5 +1,3 @@
-using System.Collections.Immutable;
-
 namespace AoC2023
 {
     public static class Day7
@@ -50,7 +48,49 @@ namespace AoC2023
             }
             return order;
         }
+        
+        public static int CompareHandsOfDarkness(Hand hand1, Hand hand2)
+        {
+            // Count the number of each card in each hand
+            var hand1Counts = CountCards(hand1);
+            var hand2Counts = CountCards(hand2);
 
+            var hand1CardCounts = hand1Counts.Values.OrderByDescending(x => x).ToList();
+            var hand2CardCounts = hand2Counts.Values.OrderByDescending(x => x).ToList();
+
+            JokerTrickery(hand1Counts, hand1CardCounts);
+            JokerTrickery(hand2Counts, hand2CardCounts);
+
+            // Bigger amount of groups means automatically weaker set
+            var order = hand2CardCounts.Count - hand1CardCounts.Count;
+            if (order != 0) return order;
+            
+            // Compare counts of biggest sets
+            for (var i = 0; i < hand1CardCounts.Count; ++i)
+            {
+                order = hand1CardCounts[i] - hand2CardCounts[i];
+                if (order != 0) return order;
+            }
+
+            for (var i = 0; i < hand1.Cards.Length; ++i)
+            {
+                var hand1CardScore = GetGothamCardScore(hand1.Cards[i]);
+                var hand2CardScore = GetGothamCardScore(hand2.Cards[i]);
+                
+                order = hand1CardScore - hand2CardScore;
+                if (order != 0) return order;
+            }
+            return order;
+
+            static void JokerTrickery(IDictionary<char, int> handCounts, IList<int> handCardCounts)
+            {
+                handCounts.TryGetValue('J', out var jesterCount1);
+                if (jesterCount1 == 5) return;
+                handCardCounts.Remove(jesterCount1);
+                handCardCounts[0] += jesterCount1;
+            }
+        }
+        
         public static int GetCardScore(char card)
         {
             return card switch
@@ -64,6 +104,20 @@ namespace AoC2023
             };
         }
 
+        
+        public static int GetGothamCardScore(char card)
+        {
+            return card switch
+            {
+                'A' => 14,
+                'K' => 13,
+                'Q' => 12,
+                'J' => 0,
+                'T' => 10,
+                _ => card - '0'
+            };
+        }
+        
         public static string Part1(IEnumerable<string> lines)
         {
             var hands = lines.Select(x => new Hand(x)).ToList();
@@ -76,7 +130,12 @@ namespace AoC2023
 
         public static string Part2(IEnumerable<string> lines)
         {
-            throw new NotImplementedException();
+            var hands = lines.Select(x => new Hand(x)).ToList();
+            hands.Sort(CompareHandsOfDarkness);
+            // Count each hands Bid multiplied with order in the hands list and sum all of these together
+            var sum = hands.Select((hand, index) => hand.Bid * (index + 1)).Sum();
+
+            return sum.ToString();
         }
 
         private static Dictionary<char, int> CountCards(Hand hand)
